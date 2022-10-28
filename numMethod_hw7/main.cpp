@@ -6,7 +6,7 @@
 //
 
 #include <iostream>
-#include <stdio.h>
+#include <cmath>
 
 using namespace std;
 
@@ -106,68 +106,145 @@ int gaussion(double matrixA[4][4], double vectorB[4], double result[4], int size
 //end
 
 //hw 7 stuffs
-double f(double x, double y, double h, double k, double r) {
-    return ((x-h)*(x-h))+((y-k)*(y-k))-(r*r);
+// double f(double x, double y, double h, double k, double r) {
+//     return ((x-h)*(x-h))+((y-k)*(y-k))-(r*r);
+// }
+
+// double dfdh(double x, double y, double h) {
+//     return -2*(x-h);
+// }
+
+// double dfdk(double x, double y, double k) {
+//     return -2*(y-k);
+// }
+
+// double dfdr(double x, double y, double r) {
+//     return -2*r;
+// }
+
+double f1(double x1, double x2, double x3) {
+    return (pow(x1, 3)) + (pow(x1, 2)*x2) - (x1*x3)+6;
 }
 
-double dfdh(double x, double y, double h) {
-    return -2*(x-h);
+double df1dx1(double x1, double x2, double x3) {
+    return (3*pow(x1, 2))-(2*(x1*x2))-(x3);
 }
 
-double dfdk(double x, double y, double k) {
-    return -2*(y-k);
+double df1dx2(double x1, double x2, double x3) {
+    return -(x1*x1);
 }
 
-double dfdr(double x, double y, double r) {
-    return -2*r;
+double df1dx3(double x1, double x2, double x3) {
+    return -(x1);
 }
 
-int jacobian(double x1, double y1, double x2, double y2, double x3, double y3) {
+double f2(double x1, double x2, double x3) {
+    return exp(x1)+exp(x2)-x3;
+}
+
+double df2dx1(double x1, double x2, double x3) {
+    return exp(x1);
+}
+
+double df2dx2(double x1, double x2, double x3) {
+    return exp(x2);
+}
+
+double df2dx3(double x1, double x2, double x3) {
+    return -1;
+}
+
+double f3(double x1, double x2, double x3) {
+    return (x2*x2)-(2*x1*x3)-4;
+}
+
+double df3dx1(double x1, double x2, double x3) {
+    return -(2*x3);
+}
+
+double df3dx2(double x1, double x2, double x3) {
+    return 2*x2;
+}
+
+double df3dx3(double x1, double x2, double x3) {
+    return -(2*x1);
+}
+
+
+int multiNewton(double x1, double y1, double x2, double y2, double x3, double y3) {
     //std::ios::sync_with_stdio(false);
     //cin.tie(NULL);
     
     //3x3 matrix
-    double DfMat[4][4];
+    double DfMat[4][4] = {1};
     
     //initial vector
-    double initVec[4] = {1, 1, 1, 1};
-    
+    double initVec[4] = {1};
+    initVec[1] = -1;
+    initVec[2] = -2;
+    initVec[3] = 1;
+
     //vector of 3 elements
-    double FVec[4];
+    double FVec[4] = {1};
     
     //vector to store the result
-    double result[4];
+    double result[4] = {1};
     
     //set DfMat matrix
     //row 1 f1
-    DfMat[1][1] = dfdh(x1, y1, initVec[1]);
-    DfMat[1][2] = dfdk(x1, y1, initVec[2]);
-    DfMat[1][3] = dfdr(x1, y1, initVec[3]);
-    //row 2 f2
-    DfMat[2][1] = dfdh(x2, y2, initVec[1]);
-    DfMat[2][2] = dfdk(x2, y2, initVec[2]);
-    DfMat[2][3] = dfdr(x2, y2, initVec[3]);
+    // DfMat[1][1] = dfdh(x1, y1, initVec[1]);
+    // DfMat[1][2] = dfdk(x1, y1, initVec[2]);
+    // DfMat[1][3] = dfdr(x1, y1, initVec[3]);
+    // //row 2 f2
+    // DfMat[2][1] = dfdh(x2, y2, initVec[1]);
+    // DfMat[2][2] = dfdk(x2, y2, initVec[2]);
+    // DfMat[2][3] = dfdr(x2, y2, initVec[3]);
+    // //row 1 f1
+    // DfMat[3][1] = dfdh(x3, y3, initVec[1]);
+    // DfMat[3][2] = dfdk(x3, y3, initVec[2]);
+    // DfMat[3][3] = dfdr(x3, y3, initVec[3]);
+
+    //set DfMat matrix
     //row 1 f1
-    DfMat[3][1] = dfdh(x3, y3, initVec[1]);
-    DfMat[3][2] = dfdk(x3, y3, initVec[2]);
-    DfMat[3][3] = dfdr(x3, y3, initVec[3]);
+    DfMat[1][1] = df1dx1(initVec[1], initVec[2], initVec[3]);
+    DfMat[1][2] = df1dx2(initVec[1], initVec[2], initVec[3]);
+    DfMat[1][3] = df1dx3(initVec[1], initVec[2], initVec[3]);
+    //row 2 f2
+    DfMat[2][1] = df2dx1(initVec[1], initVec[2], initVec[3]);
+    DfMat[2][2] = df2dx2(initVec[1], initVec[2], initVec[3]);
+    DfMat[2][3] = df2dx3(initVec[1], initVec[2], initVec[3]);
+    //row 1 f1
+    DfMat[3][1] = df3dx1(initVec[1], initVec[2], initVec[3]);
+    DfMat[3][2] = df3dx2(initVec[1], initVec[2], initVec[3]);
+    DfMat[3][3] = df3dx3(initVec[1], initVec[2], initVec[3]);
     
     //set FMat vector
     //row 1 f1
-    FVec[1] = f(x1, y1, initVec[1], initVec[2], initVec[3])*-1;
+    FVec[1] = f1(initVec[1], initVec[2], initVec[3])*-1;
     //row 2 f2
-    FVec[2] = f(x2, y2, initVec[1], initVec[2], initVec[3])*-1;
+    FVec[2] = f2(initVec[1], initVec[2], initVec[3])*-1;
     //row 3 f3
-    FVec[3] = f(x3, y3, initVec[1], initVec[2], initVec[3])*-1;
+    FVec[3] = f3(initVec[1], initVec[2], initVec[3])*-1;
+
+    // for(int i = 1; i <=3; i++) {
+    //     for(int j = 1; j <=3; j++) {
+    //         cout << DfMat[i][j] << ' ';
+    //     }
+    //     cout << '\n';
+    // }
+
+    // for(int i = 1; i <= 3; i++) {
+    //     cout << FVec[i] << '\n';
+    // }
     
     int count = 0;
-    while(count < 10) {
+    while(count < 10000) {
         gaussion(DfMat, FVec, result, 3);
         //print result
-        /*cout << "result\n";
-        for(int i = 0; i <= 3; i++) {
-            cout << result[i] << '\n';
-        }*/
+        // cout << "result\n";
+        // cout << result[1] << '\n';
+        // cout << result[2] << '\n';
+        // cout << result[3] << '\n';
         
         //set initVec as result
         for(int i = 0; i <= 3; i++) {
@@ -176,33 +253,33 @@ int jacobian(double x1, double y1, double x2, double y2, double x3, double y3) {
         
         //set DfMat matrix
         //row 1 f1
-        DfMat[1][1] = dfdh(x1, y1, initVec[1]);
-        DfMat[1][2] = dfdk(x1, y1, initVec[2]);
-        DfMat[1][3] = dfdr(x1, y1, initVec[3]);
+        DfMat[1][1] = df1dx1(initVec[1], initVec[2], initVec[3]);
+        DfMat[1][2] = df1dx2(initVec[1], initVec[2], initVec[3]);
+        DfMat[1][3] = df1dx3(initVec[1], initVec[2], initVec[3]);
         //row 2 f2
-        DfMat[2][1] = dfdh(x2, y2, initVec[1]);
-        DfMat[2][2] = dfdk(x2, y2, initVec[2]);
-        DfMat[2][3] = dfdr(x2, y2, initVec[3]);
+        DfMat[2][1] = df2dx1(initVec[1], initVec[2], initVec[3]);
+        DfMat[2][2] = df2dx2(initVec[1], initVec[2], initVec[3]);
+        DfMat[2][3] = df2dx3(initVec[1], initVec[2], initVec[3]);
         //row 1 f1
-        DfMat[3][1] = dfdh(x3, y3, initVec[1]);
-        DfMat[3][2] = dfdk(x3, y3, initVec[2]);
-        DfMat[3][3] = dfdr(x3, y3, initVec[3]);
+        DfMat[3][1] = df3dx1(initVec[1], initVec[2], initVec[3]);
+        DfMat[3][2] = df3dx2(initVec[1], initVec[2], initVec[3]);
+        DfMat[3][3] = df3dx3(initVec[1], initVec[2], initVec[3]);
         
         //set FMat vector
         //row 1 f1
-        FVec[1] = f(x1, y1, initVec[1], initVec[2], initVec[3])*-1;
+        FVec[1] = f1(initVec[1], initVec[2], initVec[3])*-1;
         //row 2 f2
-        FVec[2] = f(x2, y2, initVec[1], initVec[2], initVec[3])*-1;
+        FVec[2] = f2(initVec[1], initVec[2], initVec[3])*-1;
         //row 3 f3
-        FVec[3] = f(x3, y3, initVec[1], initVec[2], initVec[3])*-1;
+        FVec[3] = f3(initVec[1], initVec[2], initVec[3])*-1;
         
         
         count++;
         
-        /*cout << "initVec\n";
-        cout << "h: " << initVec[1] << '\n';
-        cout << "k: " << initVec[2] << '\n';
-        cout << "r: " << initVec[3] << '\n';*/
+        // cout << "initVec\n";
+        // cout << "h: " << initVec[1] << '\n';
+        // cout << "k: " << initVec[2] << '\n';
+        // cout << "r: " << initVec[3] << '\n';
     }
     
     //print result
@@ -211,9 +288,13 @@ int jacobian(double x1, double y1, double x2, double y2, double x3, double y3) {
         cout << initVec[i] << '\n';
     }*/
     
-    cout << "h: " << initVec[1] << '\n';
-    cout << "k: " << initVec[2] << '\n';
-    cout << "r: " << initVec[3] << '\n';
+    // cout << "h: " << initVec[1] << '\n';
+    // cout << "k: " << initVec[2] << '\n';
+    // cout << "r: " << initVec[3] << '\n';
+    
+    cout << "x1: " << initVec[1] << '\n';
+    cout << "x2: " << initVec[2] << '\n';
+    cout << "x3: " << initVec[3] << '\n';
     
     return 0;
 }
@@ -221,10 +302,10 @@ int jacobian(double x1, double y1, double x2, double y2, double x3, double y3) {
 int main(int argc, char *argv[]) {
     //test 1
     cout << "test1\n";
-    jacobian(-8, -4, 6, 9, 4, -9);
+    multiNewton(-8, -4, 6, 9, 4, -9);
     
-    cout << "test2\n";
-    jacobian(-1, 6, -2, -6, 5, 0);
+    //cout << "test2\n";
+    //jacobian(-1, 6, -2, -6, 5, 0);
     
     return 0;
 }
